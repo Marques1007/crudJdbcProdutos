@@ -3,7 +3,6 @@ package controllers;
 import java.util.Scanner;
 
 import entities.Produto;
-import factories.ConnectionFactory;
 import repositories.ProdutoRepository;
 
 /*
@@ -12,29 +11,75 @@ import repositories.ProdutoRepository;
 public class ProdutoController {
 	
 	//atributo para capturar os dados a serem gravados no banco
-	private Scanner scaner = new Scanner(System.in);
+	private Scanner scanner = new Scanner(System.in);
+	
+	/*
+	 * metodo para que o usuario possa escolher
+	 * que opcao do projeto deseja executar
+	 */
+	
+	public void gerenciarProdutos() throws Exception {
+		
+		System.out.println("\nGERENCIAMENTO DE PRODUTOS:\n");
+		System.out.println("(01) CADASTRAR PRODUTO");
+		System.out.println("(02) ATUALIZAR PRODUTO");
+		System.out.println("(03) EXCLUIR PRODUTO");
+		System.out.println("(04) CONSULTAR PRODUTO");
+
+	    System.out.print("\nINFORME A OPCAO DESeJADA:  ");
+	    var opcao = Integer.parseInt(scanner.nextLine());
+	    
+	    switch(opcao) {
+	    case 1 :
+	    	cadastrarProduto();
+	    	break;
+	    case 2 :
+	    	atualizarProduto();
+	    	break;
+	    case 3 :
+	    	excluirProduto();
+	    	break;
+	    case 4 :
+	    	consultarProdutos();
+	    	break;
+	    default :
+	    	System.out.println("\nOPCAO INVALIDA");
+	    	break;
+	    }
+	    System.out.println("\nDESEJA REALIZAR OUTRA OPERAÇÃO? (S/N):");
+	    var continuar = scanner.nextLine();
+	    //equalsIgnoreCase("S") ignora se é s maius ou s minusc o equals tem que ser literal
+	    if(continuar.equalsIgnoreCase("S")) {
+	    	gerenciarProdutos(); //recursividade.. 
+	    }
+	    else {
+	    	System.out.println("\nFIM DO PROGRAMA");
+	    }
+	
+	
+	}
 		
 	/*
 	 *metodo para capturar os dados para realizxar o cadastro de um produto 
 	 */
 
-	public void cadastrarProduto() throws Exception {
+	private void cadastrarProduto() throws Exception {
 
 	System.out.println("\nCADASTRO DE PRODUTOS:\n");
 	
 	var produto = new Produto(); //criando o objeto
 	
 	System.out.println("NOME DO PRODUTO............:");
-	produto.setNome(scaner.nextLine());
+	produto.setNome(scanner.nextLine());
 	
 	System.out.println("PRECO......................:");
-//	produto.setPreco(Double.parseDouble(scaner.nextLine()));
-	String precoX = (String.valueOf(scaner.nextLine()));
+//	produto.setPreco(Double.parseDouble(scanner.nextLine()));
+	String precoX = (String.valueOf(scanner.nextLine()));
 	precoX = precoX.replace(".", "").replace(",", ".");
 	produto.setPreco(Double.parseDouble(precoX));
 	
 	System.out.println("QUANTIDADE.................:");
-	produto.setQuantidade(Integer.parseInt(scaner.nextLine()));
+	produto.setQuantidade(Integer.parseInt(scanner.nextLine()));
 	
 	var produtoRepository = new ProdutoRepository();
 	produtoRepository.inserir(produto);
@@ -47,27 +92,27 @@ public class ProdutoController {
 	 *metodo para capturar os dados para atualizar o cadastro de um produto 
 	 */
 
-	public void atualizarProduto() throws Exception {
+	private void atualizarProduto() throws Exception {
 
 	System.out.println("\nATUALIZAR DE PRODUTOS:\n");
 	
 	var produto = new Produto(); //criando o objeto
 	
 	System.out.println("ID DO PRODUTO..............:");
-	produto.setId(Integer.parseInt(scaner.nextLine()));
+	produto.setId(Integer.parseInt(scanner.nextLine()));
 	
 	System.out.println("NOME DO PRODUTO............:");
-	produto.setNome(scaner.nextLine());
+	produto.setNome(scanner.nextLine());
 	
 	System.out.println("PRECO......................:");
-//	produto.setPreco(Double.parseDouble(scaner.nextLine()));
-	String precoX = (String.valueOf(scaner.nextLine()));
+//	produto.setPreco(Double.parseDouble(scanner.nextLine()));
+	String precoX = (String.valueOf(scanner.nextLine()));
 //	precoX = precoX.replace(",", ".").replace(".", "");
 	precoX = precoX.replace(",", ".");
 	produto.setPreco(Double.parseDouble(precoX));
 	
 	System.out.println("QUANTIDADE.................:");
-	produto.setQuantidade(Integer.parseInt(scaner.nextLine()));
+	produto.setQuantidade(Integer.parseInt(scanner.nextLine()));
 	
 	var produtoRepository = new ProdutoRepository();
 	if (produtoRepository.atualizar(produto)) {
@@ -78,4 +123,37 @@ public class ProdutoController {
 	}
 	
 	}
+	
+	/*
+	 * metodo para capaturar os dados 
+	 * para excluir um produto
+	 */
+	private void excluirProduto() throws Exception {
+		System.out.println("\nEXCLUSAO DO PRODUTO:\n");
+		
+		System.out.println("ID DO PRODUTO..............:");
+		var id = (Integer.parseInt(scanner.nextLine()));
+		
+		var produtoRepository = new ProdutoRepository();
+		
+		if (produtoRepository.excluir(id)) {
+	    	System.out.println("\nPRODUTO EXCLUIDO COM SUCESSO!");
+		}
+		else {
+	    	System.out.println("\nNENHUM PRODUTO EXCLUIDO!");
+		}
+
+	}
+	/* 
+	 * metodo para listar os produtos
+	 * 
+	 */
+	private void consultarProdutos() throws Exception {
+		System.out.println("\nCONSULTA DE PRODUTOs:\n");
+
+		var produtoRepository = new ProdutoRepository();
+		produtoRepository.consultar();
+		
+	}
+	
 }

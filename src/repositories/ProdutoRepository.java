@@ -75,5 +75,52 @@ public class ProdutoRepository {
 		return rowsAffected == 1; //true ou false
 		
 	}
+	
+	/*
+	 * metodo para excluir um produto existente
+	 */
+	public boolean excluir(Integer id) throws Exception {
+		
+		//abrir conexao com o banco de dados
+		var connection = connectionFactory.getConnection();
+		
+		//escrevendo um comando SQL para excluir o produto no bd
+		var statement = connection.prepareStatement 
+		("DELETE FROM produtos where id = ?");
+		//passando os parametros para o comando SQL
+		statement.setInt(1,  id);
+		var rowsAffected = statement.executeUpdate();
+		//fechando
+		connection.close();
+		return rowsAffected == 1; // true(1) or false(0)
+	}
+	/*
+	 * metodo para consultar todos os produtos existentes no banco de dados
+	 */
+	public void consultar() throws Exception {
+		
+		//abrir conexao com o banco de dados
+		var connection = connectionFactory.getConnection();
+		
+		//escrevendo um comando SQL para excluir o produto no bd
+		var statement = connection.prepareStatement 
+		("SELECT * FROM produtos ORDER BY id");
+		var result = statement.executeQuery();
+
+		//percorrer cada registro obtido do banco de dados
+		while(result.next()) {
+			System.out.println("ID...............:" + result.getInt("id"));
+			System.out.println("NOME.............:" + result.getString("nome"));
+			System.out.println("PRECO............:" + result.getDouble("preco"));
+			System.out.println("QUANTIDADE.......:" + result.getInt("quantidade"));
+		}
+		
+		
+		//fechando
+		connection.close();
+	
+	
+	}
+	
 
 }
